@@ -3,6 +3,7 @@
 
 import logging
 import os
+import shlex
 import subprocess
 
 from pip._internal.cli.base_command import Command
@@ -188,7 +189,8 @@ class ConfigurationCommand(Command):
             raise PipError("Could not determine appropriate file.")
 
         try:
-            subprocess.check_call([editor, fname])
+            editor, *opts = shlex.split(editor)
+            subprocess.check_call([editor, *opts, fname])
         except subprocess.CalledProcessError as e:
             raise PipError(
                 "Editor Subprocess exited with exit code {}"
